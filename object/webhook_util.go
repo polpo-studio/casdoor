@@ -15,6 +15,8 @@
 package object
 
 import (
+	"github.com/astaxie/beego/logs"
+	"io"
 	"net/http"
 	"strings"
 
@@ -37,6 +39,20 @@ func sendWebhook(webhook *Webhook, record *Record) error {
 		req.Header.Set(header.Name, header.Value)
 	}
 
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
+
+	if err != nil {
+		logs.Warning("Send webhook failed, %s, resp: %v", err.Error(), resp)
+		logs.Warning("Send webhook failed, req body: %v, url: %s", body, webhook.Url)
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		defer resp.Body.Close()
+		bodyBytes, _ := io.ReadAll(resp.Body)
+
+		logs.Warning("Send webhook failed, req body: %v, url: %s", body, webhook.Url)
+		logs.Error("Send webhook failed, status code: %d, resp body: %s", resp.StatusCode, string(bodyBytes))
+	}
+
 	return err
 }
