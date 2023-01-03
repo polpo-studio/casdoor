@@ -504,6 +504,12 @@ class LoginPage extends React.Component {
               })
             }
           </Form.Item>
+          <Form.Item>
+            {
+              application && application.termsOfUseContent &&
+              <div dangerouslySetInnerHTML={{ __html: application.termsOfUseContent.replace('<a', '<a target="_blank"')}} />
+            }
+          </Form.Item>
         </Form>
       );
     } else {

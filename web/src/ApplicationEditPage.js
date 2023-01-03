@@ -398,13 +398,21 @@ class ApplicationEditPage extends React.Component {
             {Setting.getLabel(i18next.t("provider:Terms of Use"), i18next.t("provider:Terms of Use - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.application.termsOfUse} style={{marginBottom: "10px"}} onChange={e => {
-              this.updateApplicationField("termsOfUse", e.target.value);
-            }}/>
-            <Upload maxCount={1} accept=".html" showUploadList={false}
-                    beforeUpload={file => {return false}} onChange={info => {this.handleUpload(info)}}>
-              <Button icon={<UploadOutlined />} loading={this.state.uploading}>{i18next.t("general:Click to Upload")}</Button>
-            </Upload>
+            <Popover placement="right" content={
+              <div style={{width: "900px", height: "300px"}} >
+                <CodeMirror
+                  value={this.state.application.termsOfUse}
+                  options={{mode: 'htmlmixed', theme: "material-darker"}}
+                  onBeforeChange={(editor, data, value) => {
+                    this.updateApplicationField("termsOfUse", value);
+                  }}
+                />
+              </div>
+            } title='编辑' trigger="click">
+              <Input value={this.state.application.termsOfUse} style={{marginBottom: "10px"}} onChange={e => {
+                this.updateApplicationField("termsOfUse", e.target.value)
+              }}/>
+            </Popover>
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >

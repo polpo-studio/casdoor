@@ -100,7 +100,7 @@ class SignupPage extends React.Component {
         });
 
         if (application !== null && application !== undefined) {
-            this.getTermsofuseContent(application.termsOfUse);
+          this.setState({termsOfUseContent: application.termsOfUse})
         }
       });
   }
@@ -123,16 +123,6 @@ class SignupPage extends React.Component {
     } else {
       return this.state.application;
     }
-  }
-
-  getTermsofuseContent(url) {
-    fetch(url, {
-      method: "GET",
-    }).then(r => {
-      r.text().then(res => {
-        this.setState({termsOfUseContent: res})
-      })
-    })
   }
 
   onUpdateAccount(account) {
@@ -445,7 +435,7 @@ class SignupPage extends React.Component {
           <Input.Password />
         </Form.Item>
       )
-    } else if (signupItem.name === "Agreement") {
+    } else if (signupItem.name === "Agreement" && application.termsOfUseContent) {
       return (
         <Form.Item
           name="agreement"
@@ -460,46 +450,11 @@ class SignupPage extends React.Component {
           {...tailFormItemLayout}
         >
           <Checkbox>
-            {i18next.t("signup:Accept")}&nbsp;
-            <Link onClick={() => {
-              this.setState({
-                isTermsOfUseVisible: true,
-              });
-            }}>
-              {i18next.t("signup:Terms of Use")}
-            </Link>
+            <div dangerouslySetInnerHTML={{ __html: application.termsOfUseContent.replace('<a', '<a target="_blank"')}} />
           </Checkbox>
         </Form.Item>
       )
     }
-  }
-
-  renderModal() {
-    return (
-      <Modal
-        title={i18next.t("signup:Terms of Use")}
-        visible={this.state.isTermsOfUseVisible}
-        width={"55vw"}
-        closable={false}
-        okText={i18next.t("signup:Accept")}
-        cancelText={i18next.t("signup:Decline")}
-        onOk={() => {
-          this.form.current.setFieldsValue({agreement: true})
-          this.setState({
-            isTermsOfUseVisible: false,
-          });
-        }}
-        onCancel={() => {
-          this.form.current.setFieldsValue({agreement: false})
-          this.setState({
-            isTermsOfUseVisible: false,
-          });
-          this.props.history.goBack();
-        }}
-      >
-        <iframe title={"terms"} style={{border: 0, width: "100%", height: "60vh"}} srcDoc={this.state.termsOfUseContent}/>
-      </Modal>
-    )
   }
 
   renderForm(application) {
@@ -610,9 +565,6 @@ class SignupPage extends React.Component {
             </div>
           </Col>
         </Row>
-        {
-          this.renderModal()
-        }
       </div>
     )
   }
