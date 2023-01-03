@@ -98,10 +98,6 @@ class SignupPage extends React.Component {
         this.setState({
           application: application,
         });
-
-        if (application !== null && application !== undefined) {
-          this.setState({termsOfUseContent: application.termsOfUse})
-        }
       });
   }
 
@@ -435,25 +431,6 @@ class SignupPage extends React.Component {
           <Input.Password />
         </Form.Item>
       )
-    } else if (signupItem.name === "Agreement" && application.termsOfUseContent) {
-      return (
-        <Form.Item
-          name="agreement"
-          key="agreement"
-          valuePropName="checked"
-          rules={[
-            {
-              required: required,
-              message: i18next.t("signup:Please accept the agreement!"),
-            },
-          ]}
-          {...tailFormItemLayout}
-        >
-          <Checkbox>
-            <div dangerouslySetInnerHTML={{ __html: application.termsOfUseContent.replace('<a', '<a target="_blank"')}} />
-          </Checkbox>
-        </Form.Item>
-      )
     }
   }
 
@@ -530,6 +507,12 @@ class SignupPage extends React.Component {
             {i18next.t("signup:sign in now")}
           </a>
         </Form.Item>
+        {
+          application && application.termsOfUse &&
+          <Form.Item {...tailFormItemLayout}>
+            <div className='termsOfUse' style={{color: '#9CA3AF'}} dangerouslySetInnerHTML={{ __html: application.termsOfUse.replace('<a', '<a target="_blank"')}} />
+          </Form.Item>
+        }
       </Form>
     )
   }

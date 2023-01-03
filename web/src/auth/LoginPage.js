@@ -497,17 +497,20 @@ class LoginPage extends React.Component {
               !application.enableSignUp ? null : this.renderFooter(application)
             }
           </Form.Item>
+          {
+            application.providers.filter(providerItem => this.isProviderVisible(providerItem)).length !== 0 &&
+            <Form.Item>
+              {
+                application.providers.filter(providerItem => this.isProviderVisible(providerItem)).map(providerItem => {
+                  return this.renderProviderLogo(providerItem.provider, application, 30, 5, "small");
+                })
+              }
+            </Form.Item>
+          }
           <Form.Item>
             {
-              application.providers.filter(providerItem => this.isProviderVisible(providerItem)).map(providerItem => {
-                return this.renderProviderLogo(providerItem.provider, application, 30, 5, "small");
-              })
-            }
-          </Form.Item>
-          <Form.Item>
-            {
-              application && application.termsOfUseContent &&
-              <div dangerouslySetInnerHTML={{ __html: application.termsOfUseContent.replace('<a', '<a target="_blank"')}} />
+              application && application.termsOfUse &&
+              <div className='termsOfUse' style={{color: '#9CA3AF'}} dangerouslySetInnerHTML={{ __html: application.termsOfUse.replace('<a', '<a target="_blank"')}} />
             }
           </Form.Item>
         </Form>
